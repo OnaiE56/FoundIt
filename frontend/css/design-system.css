@@ -1,0 +1,608 @@
+/* ==========================================================================
+   CampusFind Design System & Core Stylesheet
+   Tagline: CampusFind – Find. Report. Reclaim.
+   Visual Identity: Deep University Navy (#0C2340 / #0A192F), Action Blue (#2563EB),
+   Soft Backgrounds (#F8FAFC), Rounded UI (12-16px), Clean Accessible Typography.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand Navy Palette */
+  --cf-navy-950: #06121E;
+  --cf-navy-900: #0A192F;
+  --cf-navy-850: #0C2340;
+  --cf-navy-800: #102A4C;
+  --cf-navy-700: #1E3A8A;
+
+  /* Primary Action Blue */
+  --cf-blue-600: #2563EB;
+  --cf-blue-500: #3B82F6;
+  --cf-blue-700: #1D4ED8;
+  --cf-blue-50:  #EFF6FF;
+  --cf-blue-100: #DBEAFE;
+
+  /* Neutrals & Surfaces */
+  --cf-bg-page:   #F8FAFC;
+  --cf-bg-card:   #FFFFFF;
+  --cf-bg-subtle: #F1F5F9;
+  --cf-border:    #E2E8F0;
+  --cf-border-dark: #CBD5E1;
+
+  /* Text Colors */
+  --cf-text-main:    #0F172A;
+  --cf-text-muted:   #64748B;
+  --cf-text-light:   #94A3B8;
+  --cf-text-inverse: #FFFFFF;
+
+  /* Status Colors */
+  --cf-found-bg:    #ECFDF5;
+  --cf-found-text:  #065F46;
+  --cf-found-border:#A7F3D0;
+  --cf-found-badge: #10B981;
+
+  --cf-lost-bg:     #FEF2F2;
+  --cf-lost-text:   #991B1B;
+  --cf-lost-border: #FECACA;
+  --cf-lost-badge:  #EF4444;
+
+  --cf-pending-bg:    #FFFBEB;
+  --cf-pending-text:  #92400E;
+  --cf-pending-border:#FDE68A;
+  --cf-pending-badge: #F59E0B;
+
+  --cf-approved-bg:   #ECFDF5;
+  --cf-approved-text: #047857;
+
+  --cf-rejected-bg:   #FEF2F2;
+  --cf-rejected-text: #B91C1C;
+
+  /* Shadows */
+  --cf-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --cf-shadow-card: 0 2px 8px -2px rgba(12, 35, 64, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --cf-shadow-hover: 0 10px 20px -3px rgba(12, 35, 64, 0.10), 0 4px 6px -2px rgba(12, 35, 64, 0.05);
+  --cf-shadow-modal: 0 20px 25px -5px rgba(12, 35, 64, 0.25), 0 8px 10px -6px rgba(12, 35, 64, 0.2);
+
+  /* Radii */
+  --cf-radius-sm: 8px;
+  --cf-radius-md: 12px;
+  --cf-radius-lg: 16px;
+  --cf-radius-xl: 20px;
+  --cf-radius-full: 9999px;
+
+  /* Typography */
+  --cf-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--cf-font-sans);
+  background-color: var(--cf-bg-page);
+  color: var(--cf-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Links & Buttons base */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* --------------------------------------------------------------------------
+   UI Components & Utilities
+   -------------------------------------------------------------------------- */
+
+/* Cards */
+.cf-card {
+  background: var(--cf-bg-card);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  box-shadow: var(--cf-shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cf-card:hover {
+  box-shadow: var(--cf-shadow-hover);
+  border-color: #CBD5E1;
+}
+
+/* Buttons */
+.cf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.925rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--cf-radius-md);
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  line-height: 1.25;
+}
+
+.cf-btn-primary {
+  background-color: var(--cf-blue-600);
+  color: var(--cf-text-inverse);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.cf-btn-primary:hover {
+  background-color: var(--cf-blue-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.cf-btn-primary:active {
+  transform: translateY(0);
+}
+
+.cf-btn-secondary {
+  background-color: var(--cf-bg-subtle);
+  color: var(--cf-navy-900);
+  border: 1px solid var(--cf-border);
+}
+
+.cf-btn-secondary:hover {
+  background-color: #E2E8F0;
+  color: var(--cf-navy-950);
+}
+
+.cf-btn-outline {
+  background-color: transparent;
+  color: var(--cf-navy-900);
+  border: 1.5px solid var(--cf-border-dark);
+}
+
+.cf-btn-outline:hover {
+  background-color: var(--cf-bg-subtle);
+  border-color: var(--cf-navy-900);
+}
+
+.cf-btn-white {
+  background-color: #FFFFFF;
+  color: var(--cf-navy-900);
+  border: 1px solid var(--cf-border);
+}
+
+.cf-btn-white:hover {
+  background-color: var(--cf-bg-subtle);
+}
+
+.cf-btn-danger {
+  background-color: #DC2626;
+  color: #FFFFFF;
+}
+
+.cf-btn-danger:hover {
+  background-color: #B91C1C;
+}
+
+.cf-btn-success {
+  background-color: #10B981;
+  color: #FFFFFF;
+}
+
+.cf-btn-success:hover {
+  background-color: #059669;
+}
+
+.cf-btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: var(--cf-radius-sm);
+}
+
+/* Status Badges */
+.cf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--cf-radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.025em;
+  line-height: 1.2;
+}
+
+.cf-badge-found {
+  background-color: var(--cf-found-bg);
+  color: var(--cf-found-text);
+  border: 1px solid var(--cf-found-border);
+}
+
+.cf-badge-lost {
+  background-color: var(--cf-lost-bg);
+  color: var(--cf-lost-text);
+  border: 1px solid var(--cf-lost-border);
+}
+
+.cf-badge-pending {
+  background-color: var(--cf-pending-bg);
+  color: var(--cf-pending-text);
+  border: 1px solid var(--cf-pending-border);
+}
+
+.cf-badge-approved {
+  background-color: var(--cf-approved-bg);
+  color: var(--cf-approved-text);
+  border: 1px solid var(--cf-found-border);
+}
+
+.cf-badge-rejected {
+  background-color: var(--cf-rejected-bg);
+  color: var(--cf-rejected-text);
+  border: 1px solid var(--cf-lost-border);
+}
+
+/* Forms & Inputs */
+.cf-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.cf-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cf-navy-900);
+}
+
+.cf-label-required::after {
+  content: ' *';
+  color: #EF4444;
+}
+
+.cf-input, .cf-select, .cf-textarea {
+  width: 100%;
+  padding: 0.6875rem 0.875rem;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--cf-text-main);
+  background-color: #FFFFFF;
+  border: 1.5px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cf-input:focus, .cf-select:focus, .cf-textarea:focus {
+  border-color: var(--cf-blue-600);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.cf-input::placeholder, .cf-textarea::placeholder {
+  color: var(--cf-text-light);
+}
+
+.cf-input-error {
+  border-color: #EF4444 !important;
+}
+
+.cf-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+.cf-error-text {
+  font-size: 0.8125rem;
+  color: #DC2626;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Segmented Toggle Pills */
+.cf-toggle-group {
+  display: flex;
+  background-color: var(--cf-bg-subtle);
+  padding: 0.25rem;
+  border-radius: var(--cf-radius-md);
+  border: 1px solid var(--cf-border);
+}
+
+.cf-toggle-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--cf-radius-sm);
+  color: var(--cf-text-muted);
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.cf-toggle-btn.active {
+  background-color: var(--cf-blue-600);
+  color: #FFFFFF;
+  box-shadow: var(--cf-shadow-sm);
+}
+
+/* Desktop Navy Sidebar */
+.cf-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: var(--cf-navy-900);
+  color: var(--cf-text-inverse);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cf-sidebar-brand {
+  padding: 1.5rem 1.25rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cf-sidebar-brand-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+}
+
+.cf-sidebar-nav {
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.cf-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.875rem;
+  border-radius: var(--cf-radius-md);
+  color: #94A3B8;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.15s ease;
+}
+
+.cf-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+.cf-nav-item.active {
+  background-color: var(--cf-blue-600);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.cf-nav-item svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.cf-sidebar-footer {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Modals */
+.cf-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 25, 47, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.cf-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cf-modal-card {
+  background: #FFFFFF;
+  border-radius: var(--cf-radius-xl);
+  box-shadow: var(--cf-shadow-modal);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.95) translateY(10px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 1.75rem;
+}
+
+.cf-modal-backdrop.active .cf-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Toast Container & Notification Alerts */
+.cf-toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.cf-toast {
+  pointer-events: auto;
+  background: #FFFFFF;
+  border-radius: var(--cf-radius-md);
+  padding: 0.875rem 1.125rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--cf-border);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  animation: cfToastSlide 0.25s ease-out;
+}
+
+.cf-toast-success { border-left: 4px solid #10B981; }
+.cf-toast-error   { border-left: 4px solid #EF4444; }
+.cf-toast-info    { border-left: 4px solid #2563EB; }
+.cf-toast-warning { border-left: 4px solid #F59E0B; }
+
+@keyframes cfToastSlide {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile-First Layout Architecture
+   Base rules target smartphones (< 768px).
+   Progressive enhancement for tablet (>= 768px) and desktop (>= 1025px).
+   -------------------------------------------------------------------------- */
+
+/* Top App Header / Navbar (Base Mobile: 56px) */
+.cf-header {
+  height: 56px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--cf-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+/* Mobile Bottom Navigation Bar (Base Mobile: Visible) */
+.cf-bottom-nav {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--cf-border);
+  z-index: 50;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 0.5rem;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.cf-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  flex: 1;
+  height: 100%;
+  color: var(--cf-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.15s ease;
+  min-height: 44px; /* Touch target minimum */
+}
+
+.cf-bottom-nav-item.active {
+  color: var(--cf-blue-600);
+}
+
+.cf-bottom-nav-item svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+/* Off-canvas Navigation Drawer (Base Mobile: Hidden offscreen) */
+.cf-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: var(--cf-navy-900);
+  color: var(--cf-text-inverse);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cf-sidebar.open {
+  transform: translateX(0);
+}
+
+/* Main Content Workspace (Base Mobile: Full width, bottom padding for nav bar) */
+.cf-main-content {
+  margin-left: 0;
+  padding: 1rem;
+  padding-bottom: 78px;
+}
+
+/* Progressive Enhancement: Tablet (min-width: 768px) */
+@media (min-width: 768px) {
+  .cf-header {
+    height: 64px;
+    padding: 0 1.5rem;
+  }
+  .cf-main-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Progressive Enhancement: Desktop (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .cf-bottom-nav {
+    display: none; /* Hide bottom nav on desktop */
+  }
+  .cf-sidebar {
+    transform: translateX(0); /* Persistent sidebar on desktop */
+  }
+  .cf-main-content {
+    margin-left: 260px; /* Offset workspace for desktop sidebar */
+    padding: 2rem;
+    padding-bottom: 2rem;
+  }
+}
