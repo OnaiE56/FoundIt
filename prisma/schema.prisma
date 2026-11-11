@@ -1,0 +1,162 @@
+// CampusFind database schema, aligned with docs/system-design/database-design.md.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "sqlite"
+  url       = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum TokenType {
+  RESET
+  VERIFY
+}
+
+enum ReportType {
+  LOST
+  FOUND
+}
+
+enum ItemStatus {
+  ACTIVE
+  CLAIM_PENDING
+  RESOLVED
+  ARCHIVED
+  REJECTED
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  CLAIM_UPDATE
+  REPORT_MATCH
+  SYSTEM
+}
+
+model User {
+  id                String              @id @default(uuid())
+  email             String              @unique
+  fullName          String             
+  passwordHash      String             
+  role              Role                @default(STUDENT)
+  isEmailVerified   Boolean             @default(false)
+  isStudentVerified Boolean             @default(false)
+  studentId         String?            
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  reports            ItemReport[]
+  claims             Claim[]             @relation("ClaimantUser")
+  reviewedClaims     Claim[]             @relation("AdminReviewer")
+  notifications      Notification[]
+  verificationTokens VerificationToken[]
+}
+
+model VerificationToken {
+  id        String    @id @default(uuid())
+  userId    String   
+  tokenHash String    @unique
+  type      TokenType
+  expiresAt DateTime 
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, type, expiresAt])
+}
+
+model Category {
+  id        String       @id @default(uuid())
+  name      String       @unique
+  slug      String       @unique
+  iconName  String      
+  createdAt DateTime     @default(now())
+
+  reports ItemReport[]
+}
+
+model ItemReport {
+  id           String     @id @default(uuid())
+  userId       String    
+  categoryId   String    
+  itemName     String    
+  description  String    
+  reportType   ReportType
+  location     String    
+  dateReported DateTime  
+  status       ItemStatus @default(ACTIVE)
+  imageUrl     String?   
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Restrict)
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  claims        Claim[]
+  notifications Notification[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([status, reportType, createdAt(sort: Desc)])
+}
+
+model Claim {
+  id                String      @id @default(uuid())
+  reportId          String     
+  claimantId        String     
+  additionalDetails String     
+  status            ClaimStatus @default(PENDING)
+  decisionNotes     String?    
+  reviewedBy        String?    
+  resolvedAt        DateTime?  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  report        ItemReport     @relation(fields: [reportId], references: [id], onDelete: Restrict)
+  claimant      User           @relation("ClaimantUser", fields: [claimantId], references: [id], onDelete: Restrict)
+  reviewer      User?          @relation("AdminReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  notifications Notification[]
+
+  @@index([reportId, status])
+  @@index([claimantId])
+  @@index([reviewedBy])
+}
+
+model Notification {
+  id              String           @id @default(uuid())
+  userId          String          
+  title           String          
+  message         String          
+  type            NotificationType
+  relatedReportId String?         
+  relatedClaimId  String?         
+  isRead          Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  relatedReport ItemReport? @relation(fields: [relatedReportId], references: [id], onDelete: SetNull)
+  relatedClaim  Claim?      @relation(fields: [relatedClaimId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @map("sess")
+  expiresAt DateTime @map("expire")
+
+  @@index([expiresAt], map: "IDX_session_expire")
+}

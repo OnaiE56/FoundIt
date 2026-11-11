@@ -8,9 +8,8 @@ export const CONFIG = {
   TAGLINE: 'Find. Report. Reclaim.',
   VERSION: '1.0.0',
 
-  // Prototype toggle: set to false when connecting to production REST API
-  USE_MOCK: true,
-  API_BASE_URL: 'http://localhost:5000/api/v1',
+  // Same-origin API path works in local Vercel development and production.
+  API_BASE_URL: '/api/v1',
 
   // Validation rules
   VALIDATION: {
@@ -68,31 +67,4 @@ export const CONFIG = {
     ADMIN: 'admin'
   },
 
-  // Fictional Demo Accounts for Testing & Review
-  DEMO_ACCOUNTS: {
-    STUDENT: {
-      id: 'usr_student_01',
-      name: 'Alex Morgan',
-      email: 'alex.morgan@example.edu',
-      role: 'student',
-      studentId: 'STU-88219',
-      avatarText: 'AM'
-    },
-    STUDENT_SECONDARY: {
-      id: 'usr_student_02',
-      name: 'Jordan Taylor',
-      email: 'jordan.taylor@example.edu',
-      role: 'student',
-      studentId: 'STU-94032',
-      avatarText: 'JT'
-    },
-    ADMIN: {
-      id: 'usr_admin_01',
-      name: 'Campus Safety Officer',
-      email: 'admin@campusfind.org',
-      role: 'admin',
-      staffId: 'ADM-1004',
-      avatarText: 'AD'
-    }
-  }
 };

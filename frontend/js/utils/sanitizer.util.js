@@ -5,6 +5,20 @@
 
 export const Sanitizer = {
   /**
+   * Escapes text before it is inserted into an HTML template.
+   * @param {string} value
+   * @returns {string}
+   */
+  escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
+  /**
    * Sanitizes item objects for public browse & search views
    * Removes reporter's email, student ID, and personal contact info
    * @param {Object} item

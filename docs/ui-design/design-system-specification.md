@@ -20,6 +20,10 @@ CampusFind is an academic lost-and-found management platform built for universit
 5. **Thumb-Friendly Touch Targets**: Minimum 44×44px hit areas on mobile controls, dedicated bottom-bar navigation, and responsive 2×2 stat grids.
 6. **Privacy by Default**: Public views never display sensitive student identification (student IDs, personal phone numbers, or private emails).
 
+### 1.1 Styling Architecture & Implementation Status
+- **Current Foundation**: The visual design system is currently implemented via standard CSS custom properties (tokens) and utility rules in `frontend/css/design-system.css`. This enables instant in-browser preview without build-step dependencies during the preparation and foundation stage.
+- **Tailwind CSS Roadmap**: Tailwind CSS is planned for future automated compilation workflows. The utility naming conventions and arbitrary-value classes shown throughout this specification (e.g., `bg-[#0A192F]`, `w-[260px]`) are mapped directly to corresponding custom CSS variables and utility classes in `design-system.css` until the Tailwind build pipeline is integrated.
+
 ---
 
 ## 2. Colour Palette & Design Tokens
@@ -241,6 +245,14 @@ The design system operates on an **8-point grid** (with a 4px half-step for micr
 ### 6.10 Empty State Component (`empty-state.js`)
 - **Anatomy**: Soft gray illustrated icon, clear title (e.g., *"No items found"*), explanatory sentence, and CTA button (*"Clear filters"* or *"Report a Lost Item"*).
 
+### 6.11 Authentication & Onboarding Interface Policy
+In accordance with team architectural decisions (DEC-004 through DEC-006):
+- **Local Credential Forms (MVP Focus)**: Sign-up and login interfaces strictly feature email and password form inputs. Google SSO buttons previously shown on mockups are **deferred to Phase 2 (post-MVP)** and must be hidden or omitted from initial MVP template markup.
+- **Email Validation & Domain Policy**: The registration form validates standard RFC 5322 email syntax in MVP (`VALIDATION.ENFORCE_INSTITUTION_DOMAIN: false`), with configurable support for institutional domain enforcement (`@*.edu` / `@university.ac.uk`) pending final administration sign-off.
+- **Two-Tier Verification UI**:
+  1. *Email Ownership Verification Banner*: A dismissible, high-visibility banner prompts unverified users to click their confirmation email before submitting lost/found reports or claims.
+  2. *Institutional Student Verification*: Badge display on user profiles remains inactive or marked as pending until institutional registry verification mechanisms are selected in a subsequent phase.
+
 ---
 
 ## 7. Team Task Allocation & Development Roadmap
@@ -259,8 +271,9 @@ This design system is ready to be divided among team members for implementation 
 ## Summary of Phase 2 Planning Deliverables
 
 1. **Design System Specification Document**: Complete reference (`docs/ui-design/design-system-specification.md`) detailing typography, 8pt spacing grid, color tokens, and responsive blueprints.
-2. **Component Blueprints**: Specifications for all 10 core reusable components.
-3. **Task Allocation Guide**: Clear breakdown ready for assignment across development team members.
-4. **No Premature Application Logic**: Core application pages have not been implemented yet, keeping the project foundation clean for structured review.
+2. **Component Blueprints**: Specifications for core reusable components and onboarding interfaces.
+3. **Styling Foundation Clarification**: Custom CSS design tokens (`design-system.css`) established as the current styling engine, with future Tailwind compilation support planned.
+4. **Task Allocation Guide**: Clear breakdown ready for assignment across development team members.
+5. **Architectural Synchronization**: Alignment with decisions DEC-001 through DEC-008 (Phase 2 Google OAuth deferral, dual verification tiers, and configurable domain policy).
 
-This concludes the Phase 2 Design System and visual planning documentation. Please review and provide your approval when ready to proceed to the next phase.
+This concludes the Phase 2 Design System and visual planning documentation.

@@ -1,11 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusFind</title>
+  <meta name="theme-color" content="#0A192F">
+  <meta name="description" content="Find lost belongings, report a find, and reconnect campus items with their owners.">
+  <title>CampusFind — Student portal</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/student.css">
+  <link rel="stylesheet" href="/css/setup.css">
+  <script type="module" src="/js/student.js"></script>
 </head>
-<body>
-  
+<body class="student-body">
+  <div class="student-app-shell" hidden>
+    <aside class="cf-sidebar student-sidebar" id="student-sidebar" aria-label="Student navigation">
+      <a class="cf-sidebar-brand student-brand" href="#home" aria-label="CampusFind home">
+        <span class="student-brand-mark" aria-hidden="true">C</span>
+        <span class="cf-sidebar-brand-name">CampusFind</span>
+      </a>
+      <p class="student-sidebar-caption">STUDENT SPACE</p>
+
+      <nav class="cf-sidebar-nav" aria-label="Main menu">
+        <a class="cf-nav-item" href="#home" data-nav-route="home"><span data-icon="home"></span><span>Overview</span></a>
+        <a class="cf-nav-item" href="#browse" data-nav-route="browse"><span data-icon="search"></span><span>Browse items</span></a>
+        <a class="cf-nav-item" href="#report" data-nav-route="report"><span data-icon="plus"></span><span>Report an item</span></a>
+        <a class="cf-nav-item" href="#reports" data-nav-route="reports"><span data-icon="file"></span><span>My reports</span><span class="student-nav-count" id="report-nav-count">3</span></a>
+        <a class="cf-nav-item" href="#claims" data-nav-route="claims"><span data-icon="claim"></span><span>My claims</span></a>
+        <a class="cf-nav-item" href="#profile" data-nav-route="profile"><span data-icon="user"></span><span>My profile</span></a>
+      </nav>
+
+      <div class="cf-sidebar-footer student-sidebar-footer">
+        <span class="student-demo-avatar" id="sidebar-user-avatar" aria-hidden="true">CF</span>
+        <span class="student-sidebar-user"><strong id="sidebar-user-name">CampusFind user</strong><small id="sidebar-user-role">Student account</small></span>
+        <button class="student-signout" type="button" data-action="logout">Sign out</button>
+      </div>
+    </aside>
+
+    <button class="student-sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Close navigation"></button>
+
+    <div class="student-workspace">
+      <header class="cf-header student-header">
+        <div class="student-header-leading">
+          <button class="student-icon-button student-menu-button" id="menu-toggle" type="button" aria-label="Open navigation" aria-controls="student-sidebar" aria-expanded="false">
+            <span data-icon="menu"></span>
+          </button>
+          <a class="student-mobile-brand" href="#home" aria-label="CampusFind home">
+            <span class="student-brand-mark" aria-hidden="true">C</span>
+            <span>CampusFind</span>
+          </a>
+          <div class="student-header-context">
+            <span class="student-header-kicker">STUDENT PORTAL</span>
+            <strong id="header-page-title">Overview</strong>
+          </div>
+        </div>
+
+        <div class="student-header-actions">
+          <form class="student-global-search" id="global-search" role="search">
+            <span data-icon="search" aria-hidden="true"></span>
+            <label class="sr-only" for="global-search-input">Search campus items</label>
+            <input id="global-search-input" name="search" type="search" placeholder="Search campus items" autocomplete="off">
+            <kbd>Ctrl K</kbd>
+          </form>
+
+          <div class="student-notification-wrap">
+            <button class="student-icon-button notification-button" id="notification-toggle" type="button" aria-label="Notifications, 2 unread" aria-controls="notification-popover" aria-expanded="false">
+              <span data-icon="bell"></span>
+              <span class="notification-dot" aria-hidden="true"></span>
+            </button>
+            <section class="notification-popover" id="notification-popover" aria-label="Recent notifications" hidden></section>
+          </div>
+
+          <a class="student-header-profile" href="#profile" aria-label="View your profile">
+            <span class="student-avatar" id="header-user-avatar">CF</span>
+            <span class="student-header-profile-copy"><strong id="header-user-name">CampusFind user</strong><small id="header-user-role">Student</small></span>
+            <span class="student-profile-chevron" data-icon="chevron-down"></span>
+          </a>
+        </div>
+      </header>
+
+      <main class="student-content" id="page-content" tabindex="-1"></main>
+      <footer class="student-footer"><span>CampusFind</span><span>Find. Report. Reclaim.</span><span>Semester project portal</span></footer>
+    </div>
+
+    <nav class="cf-bottom-nav student-bottom-nav" aria-label="Student shortcuts">
+      <a class="cf-bottom-nav-item" href="#home" data-nav-route="home"><span data-icon="home"></span><span>Home</span></a>
+      <a class="cf-bottom-nav-item" href="#browse" data-nav-route="browse"><span data-icon="search"></span><span>Browse</span></a>
+      <a class="cf-bottom-nav-item" href="#report" data-nav-route="report"><span data-icon="plus"></span><span>Report</span></a>
+      <a class="cf-bottom-nav-item" href="#profile" data-nav-route="profile"><span data-icon="user"></span><span>Profile</span></a>
+    </nav>
+  </div>
+
+  <main class="setup-page" id="auth-root" hidden></main>
+
+  <div id="modal-root"></div>
+  <div class="cf-toast-container student-toast-container" id="toast-region" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
