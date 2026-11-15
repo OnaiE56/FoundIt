@@ -81,7 +81,11 @@ function readUploadedImage(request) {
     try {
       parser = Busboy({
         headers: request.headers,
-        limits: { fileSize: maxImageSize, files: 1, fields: 0, parts: 1 }
+        // Busboy emits `partsLimit` as soon as the configured count is reached,
+        // so allow the first part and reject any additional part.
+        // Busboy emits `limit` upon reaching the byte threshold; allow one
+        // sentinel byte so files exactly maxImageSize bytes remain valid.
+        limits: { fileSize: maxImageSize + 1, files: 1, fields: 0, parts: 2 }
       });
     } catch {
       reject(apiError(400, 'INVALID_UPLOAD', 'Choose an image file and try again.'));

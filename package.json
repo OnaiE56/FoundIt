@@ -37,6 +37,14 @@
   "devDependencies": {
     "prisma": "^6.19.3"
   },
+  "overrides": {
+    "@prisma/config": {
+      "deepmerge-ts": "^8.0.0"
+    },
+    "@vercel/cli-config": {
+      "zod": "^4.6.7"
+    }
+  },
   "allowScripts": {
     "bcrypt": true,
     "prisma": true,
