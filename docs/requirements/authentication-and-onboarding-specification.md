@@ -1,6 +1,6 @@
-# CampusFind – Authentication & Onboarding Design Specification
+# FoundIt – Authentication & Onboarding Design Specification
 
-> **Project:** CampusFind – University Lost and Found Management System  
+> **Project:** FoundIt – University Lost and Found Management System  
 > **Tagline:** *Find. Report. Reclaim.*  
 > **Document Phase:** Phase 3 – Authentication & Onboarding Specification  
 > **Status:** Specification & Architecture (Preparation Stage – No Implementation Code)  
@@ -17,11 +17,11 @@ The Landing Page serves as the public front door to the platform, welcoming stud
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │ TOP NAVIGATION BAR                                                     │
-│ [📍 CampusFind]        Home   Browse   About   Help    [Login] [Sign Up]│
+│ [📍 FoundIt]        Home   Browse   About   Help    [Login] [Sign Up]│
 ├────────────────────────────────────────────────────────────────────────┤
 │ HERO SECTION (Background: Campus photo with deep blue overlay)         │
 │                                                                        │
-│   CampusFind                                                           │
+│   FoundIt                                                           │
 │   Lost and Found Management System for Our University                  │
 │   Report • Find • Reclaim                                              │
 │                                                                        │
@@ -38,7 +38,7 @@ The Landing Page serves as the public front door to the platform, welcoming stud
 
 ### 1.2 Desktop Specifications (>= 1025px)
 - **Header**:
-  - Left: CampusFind logo (Location pin icon + bold "CampusFind" text in `#0A192F`).
+  - Left: FoundIt logo (Location pin icon + bold "FoundIt" text in `#0A192F`).
   - Center: Navigation links (`Home`, `Browse`, `About`, `Help`) with smooth hover underlines.
   - Right: `Login` (outline pill, `#0A192F` border) and `Sign Up` (solid blue `#2563EB` button).
 - **Hero Banner**:
@@ -56,7 +56,7 @@ The Landing Page serves as the public front door to the platform, welcoming stud
 ### 1.3 Mobile Specifications (< 768px – Mobile First)
 - **Header**:
   - Height: `56px`, sticky top.
-  - Left: Logo icon + "CampusFind".
+  - Left: Logo icon + "FoundIt".
   - Right: Hamburger drawer toggle (minimum 44×44px tap target).
 - **Hero Banner**:
   - Compact padding (`padding: 32px 16px`), height dynamically fitted to content.

@@ -1,5 +1,5 @@
 /**
- * CampusFind – Privacy & Sanitization Utilities
+ * FoundIt – Privacy & Sanitization Utilities
  * Enforces requirement: Do not expose private contact information or student identification details publicly.
  */
 

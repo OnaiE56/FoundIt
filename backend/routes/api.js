@@ -212,7 +212,7 @@ function saveSession(request) {
   });
 }
 
-function publicItem(item) {
+function publicItem(item, { includeContact = false } = {}) {
   return {
     id: item.id,
     itemName: item.itemName,
@@ -223,7 +223,11 @@ function publicItem(item) {
     dateReported: item.dateReported,
     status: item.status,
     imageUrl: item.imageUrl,
-    createdAt: item.createdAt
+    createdAt: item.createdAt,
+    ...(includeContact && item.contactMethod && item.contactValue ? {
+      contactMethod: item.contactMethod,
+      contactValue: item.contactValue
+    } : {})
   };
 }
 
@@ -340,7 +344,7 @@ router.get('/items', async (request, response) => {
 router.get('/items/:id', async (request, response) => {
   const item = await prisma.itemReport.findUnique({ where: { id: request.params.id }, include: itemInclude });
   if (!item || item.status === 'ARCHIVED' || item.status === 'REJECTED') throw apiError(404, 'NOT_FOUND', 'That item report could not be found.');
-  response.json({ success: true, data: { item: publicItem(item) } });
+  response.json({ success: true, data: { item: publicItem(item, { includeContact: true }) } });
 });
 
 router.post('/items', async (request, response) => {
@@ -352,9 +356,29 @@ router.post('/items', async (request, response) => {
     description: z.string().trim().min(5).max(1000),
     location: z.string().trim().min(2).max(160),
     dateReported: z.coerce.date(),
+    contactMethod: z.enum(['EMAIL', 'WHATSAPP', 'PHONE']).optional().nullable(),
+    contactValue: z.string().trim().max(254).optional().nullable(),
     imageUrl: z.string().max(500).optional().nullable().refine((value) => (
       !value || /^\/uploads\/item-photos\/[a-f0-9]{32}\.(?:jpg|png|webp)$/.test(value) || z.string().url().safeParse(value).success
     ), 'Choose a valid uploaded image.')
+  }).transform((value) => {
+    const contactValue = value.contactValue?.trim() || null;
+    const contactMethod = contactValue ? value.contactMethod || null : null;
+    const normalizedContactValue = contactValue && ['WHATSAPP', 'PHONE'].includes(contactMethod)
+      ? contactValue.replace(/[\s().-]/g, '')
+      : contactValue;
+    return { ...value, contactMethod, contactValue: normalizedContactValue };
+  }).superRefine((value, context) => {
+    if (value.contactValue && !value.contactMethod) {
+      context.addIssue({ code: 'custom', path: ['contactMethod'], message: 'Choose a contact method.' });
+      return;
+    }
+    if (value.contactMethod === 'EMAIL' && value.contactValue && !z.string().email().max(254).safeParse(value.contactValue).success) {
+      context.addIssue({ code: 'custom', path: ['contactValue'], message: 'Enter a valid email address.' });
+    }
+    if (['WHATSAPP', 'PHONE'].includes(value.contactMethod) && value.contactValue && !/^\+[1-9]\d{7,14}$/.test(value.contactValue)) {
+      context.addIssue({ code: 'custom', path: ['contactValue'], message: 'Enter a phone number with country code, such as +233201234567.' });
+    }
   }), request.body);
   const category = await prisma.category.findUnique({ where: { id: input.categoryId } });
   if (!category) throw apiError(400, 'VALIDATION_FAILED', 'Choose a valid item category.');
@@ -363,6 +387,76 @@ router.post('/items', async (request, response) => {
     include: itemInclude
   });
   response.status(201).json({ success: true, data: { item: publicItem(item) } });
+});
+
+router.patch('/items/:id', async (request, response) => {
+  const user = requireUser(request);
+  const input = parse(z.object({ status: z.literal('RESOLVED') }), request.body);
+  const current = await prisma.itemReport.findUnique({ where: { id: request.params.id }, include: itemInclude });
+  if (!current) throw apiError(404, 'NOT_FOUND', 'That item report could not be found.');
+  if (current.userId !== user.id && user.role !== 'ADMIN') throw apiError(403, 'FORBIDDEN', 'You can only update your own item reports.');
+  if (current.status === 'RESOLVED') {
+    response.json({ success: true, data: { item: publicItem(current) } });
+    return;
+  }
+  if (!['ACTIVE', 'CLAIM_PENDING'].includes(current.status)) throw apiError(409, 'CONFLICT', 'This item report can no longer be marked as resolved.');
+
+  const item = await prisma.$transaction(async (tx) => {
+    const pendingClaims = await tx.claim.findMany({ where: { reportId: current.id, status: 'PENDING' }, select: { id: true, claimantId: true } });
+    if (pendingClaims.length) {
+      const resolvedAt = new Date();
+      await tx.claim.updateMany({
+        where: { reportId: current.id, status: 'PENDING' },
+        data: { status: 'REJECTED', decisionNotes: 'The report owner marked this item as resolved.', resolvedAt }
+      });
+      for (const claim of pendingClaims) {
+        await tx.notification.create({ data: {
+          userId: claim.claimantId,
+          title: 'Claim update',
+          message: `The report owner marked ${current.itemName} as resolved, so this claim was closed.`,
+          type: 'CLAIM_UPDATE',
+          relatedReportId: current.id,
+          relatedClaimId: claim.id
+        } });
+      }
+    }
+    return tx.itemReport.update({ where: { id: current.id }, data: input, include: itemInclude });
+  });
+  response.json({ success: true, data: { item: publicItem(item) } });
+});
+
+router.delete('/items/:id', async (request, response) => {
+  const user = requireUser(request);
+  const current = await prisma.itemReport.findUnique({ where: { id: request.params.id } });
+  if (!current) throw apiError(404, 'NOT_FOUND', 'That item report could not be found.');
+  if (current.userId !== user.id && user.role !== 'ADMIN') throw apiError(403, 'FORBIDDEN', 'You can only delete your own item reports.');
+  if (current.status === 'ARCHIVED') {
+    response.json({ success: true, data: { message: 'Item report successfully archived.' } });
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const pendingClaims = await tx.claim.findMany({ where: { reportId: current.id, status: 'PENDING' }, select: { id: true, claimantId: true } });
+    if (pendingClaims.length) {
+      const resolvedAt = new Date();
+      await tx.claim.updateMany({
+        where: { reportId: current.id, status: 'PENDING' },
+        data: { status: 'REJECTED', decisionNotes: 'The report was deleted before this claim could be reviewed.', resolvedAt }
+      });
+      for (const claim of pendingClaims) {
+        await tx.notification.create({ data: {
+          userId: claim.claimantId,
+          title: 'Claim update',
+          message: `The report for ${current.itemName} was deleted, so this claim was closed.`,
+          type: 'CLAIM_UPDATE',
+          relatedReportId: current.id,
+          relatedClaimId: claim.id
+        } });
+      }
+    }
+    await tx.itemReport.update({ where: { id: current.id }, data: { status: 'ARCHIVED' } });
+  });
+  response.json({ success: true, data: { message: 'Item report successfully archived.' } });
 });
 
 router.get('/users/me', async (request, response) => {
@@ -388,7 +482,7 @@ router.patch('/users/me', async (request, response) => {
 
 router.get('/users/me/reports', async (request, response) => {
   const user = requireUser(request);
-  const reports = await prisma.itemReport.findMany({ where: { userId: user.id }, include: { ...itemInclude, _count: { select: { claims: true } } }, orderBy: { createdAt: 'desc' } });
+  const reports = await prisma.itemReport.findMany({ where: { userId: user.id, status: { not: 'ARCHIVED' } }, include: { ...itemInclude, _count: { select: { claims: true } } }, orderBy: { createdAt: 'desc' } });
   response.json({ success: true, data: { reports: reports.map((item) => ({ ...publicItem(item), claimsCount: item._count.claims })) } });
 });
 

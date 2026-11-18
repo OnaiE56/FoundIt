@@ -1,10 +1,10 @@
-# CampusFind – Agile Development Plan
+# FoundIt – Agile Development Plan
 
 ## 1. Introduction
 
-CampusFind will adopt the Agile Software Development Model. Agile is an iterative and incremental approach that allows the development team to build the system in manageable parts, test completed features, identify problems, and make improvements throughout development.
+FoundIt will adopt the Agile Software Development Model. Agile is an iterative and incremental approach that allows the development team to build the system in manageable parts, test completed features, identify problems, and make improvements throughout development.
 
-The approach is suitable for CampusFind because the system contains several distinct features that can be developed and integrated progressively.
+The approach is suitable for FoundIt because the system contains several distinct features that can be developed and integrated progressively.
 
 ## 2. Agile Development Process
 
@@ -198,4 +198,4 @@ A feature is considered complete when:
 
 ## 9. Expected Outcome
 
-By following this Agile approach, the team aims to produce a functional, integrated and tested CampusFind application. Development will be organized into manageable increments, allowing progress to be monitored and issues to be addressed throughout the project.
+By following this Agile approach, the team aims to produce a functional, integrated and tested FoundIt application. Development will be organized into manageable increments, allowing progress to be monitored and issues to be addressed throughout the project.

@@ -1,6 +1,6 @@
-# CampusFind – Vercel Serverless Architecture & Deployment Specification
+# FoundIt – Vercel Serverless Architecture & Deployment Specification
 
-> **Project:** CampusFind – University Lost and Found Management System  
+> **Project:** FoundIt – University Lost and Found Management System  
 > **Target Platform:** Vercel (Edge Network + Serverless Functions)  
 > **Runtime:** Node.js (v20 / v24 LTS)  
 > **Database:** PostgreSQL (Separately hosted managed instance)  
@@ -11,7 +11,7 @@
 
 ## 1. Executive Architecture Overview
 
-CampusFind is designed to run in a unified, modern serverless deployment on **Vercel**. Unlike traditional monoliths hosted on continuously running virtual machines (e.g., EC2, VPS), Vercel decouples static frontend asset delivery from backend API compute:
+FoundIt is designed to run in a unified, modern serverless deployment on **Vercel**. Unlike traditional monoliths hosted on continuously running virtual machines (e.g., EC2, VPS), Vercel decouples static frontend asset delivery from backend API compute:
 
 ```mermaid
 flowchart TD
@@ -139,7 +139,7 @@ import app from './app.js';
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`[CampusFind] Server running on http://localhost:${PORT}`);
+  console.log(`[FoundIt] Server running on http://localhost:${PORT}`);
 });
 ```
 
@@ -229,7 +229,7 @@ Connection pooling parameters are **provider-specific** and must be configured a
   - `DIRECT_URL`: `postgresql://[user]:[password]@[rds-instance-endpoint]:5432/[dbname]`
 
 ### 5.4 Prisma Client Global Singleton Pattern
-To prevent warm serverless containers from repeatedly instantiating new `PrismaClient` instances during hot-reloads or container re-invocations, CampusFind employs the global singleton pattern:
+To prevent warm serverless containers from repeatedly instantiating new `PrismaClient` instances during hot-reloads or container re-invocations, FoundIt employs the global singleton pattern:
 
 ```javascript
 // backend/utils/prisma.js
@@ -312,7 +312,7 @@ The following variables must be configured in the Vercel Project Dashboard (unde
 
 ## 9. Production Deployment Checklist
 
-Prior to launching CampusFind to production on Vercel:
+Prior to launching FoundIt to production on Vercel:
 
 - [ ] **Database Provisioning**: Verify that the PostgreSQL database instance is provisioned with automated backups enabled.
 - [ ] **Connection Pooling**: Confirm that the connection pooler is in **Transaction Mode** and handles connection surges gracefully.

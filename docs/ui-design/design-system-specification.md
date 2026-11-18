@@ -1,6 +1,6 @@
-# CampusFind – Design System Specification & Visual Planning Guide
+# FoundIt – Design System Specification & Visual Planning Guide
 
-> **Project:** CampusFind – University Lost and Found Management System  
+> **Project:** FoundIt – University Lost and Found Management System  
 > **Tagline:** *Find. Report. Reclaim.*  
 > **Stage:** Project Foundation, Design System & Team Task Planning  
 > **Version:** 1.0.0  
@@ -10,7 +10,7 @@
 
 ## 1. Design Philosophy & Visual Identity
 
-CampusFind is an academic lost-and-found management platform built for university students, faculty, and administrative staff. The design language must convey **trust, security, professionalism, and effortless clarity**.
+FoundIt is an academic lost-and-found management platform built for university students, faculty, and administrative staff. The design language must convey **trust, security, professionalism, and effortless clarity**.
 
 ### Core Brand Principles:
 1. **Mobile-First Engineering**: Every interface, layout, and component is designed and styled starting from mobile viewports (smartphones, 320px–480px) as the base foundation, progressively enhancing for tablet (768px) and desktop (1024px+).

@@ -1,5 +1,5 @@
 /**
- * CampusFind – Image Utility Pipeline
+ * FoundIt – Image Utility Pipeline
  * Handles instant client-side previews (Object URLs), thumbnail scaling (HTML5 Canvas),
  * and IndexedDB storage for mock persistence without exceeding localStorage quotas.
  */
@@ -24,7 +24,7 @@ function openImageDB() {
       resolve(dbInstance);
     };
     request.onerror = (e) => {
-      console.warn('CampusFind: IndexedDB unavailable, falling back to in-memory previews.', e);
+      console.warn('FoundIt: IndexedDB unavailable, falling back to in-memory previews.', e);
       resolve(null);
     };
   });

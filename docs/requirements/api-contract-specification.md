@@ -1,6 +1,6 @@
-# CampusFind – REST API Contract Specification
+# FoundIt – REST API Contract Specification
 
-> **Project:** CampusFind – University Lost and Found Management System  
+> **Project:** FoundIt – University Lost and Found Management System  
 > **API Version:** v1 (`/api/v1`)  
 > **Specification Version:** 1.0.0  
 > **Stage:** Project Foundation and Technical Architecture Specification  
@@ -348,9 +348,12 @@ Detailed workflow specifications are defined in [`docs/requirements/authenticati
     "description": "Found inside Lecture Hall 3 on the 4th row. Screen intact, slight sticker residue on lid.",
     "location": "Science Complex - Lecture Hall 3",
     "dateReported": "2026-11-10T14:30:00.000Z",
+    "contactMethod": "WHATSAPP",
+    "contactValue": "+233201234567",
     "imageUrl": "https://pub-blob.vercel-storage.com/campusfind/items/laptop-abc123.jpg"
   }
   ```
+  `contactMethod` and `contactValue` are optional; when a phone number is used, include its country code (for example, `+233201234567`).
 - **Response (201 Created)**:
   ```json
   {
@@ -390,7 +393,7 @@ Detailed workflow specifications are defined in [`docs/requirements/authenticati
   | `status` | String | No | `ACTIVE` | Filter by status (`ACTIVE`, `RESOLVED`, `ALL`) |
   | `page` | Integer | No | `1` | Pagination page number |
   | `limit` | Integer | No | `20` | Results per page (max `50`) |
-- **Privacy & PII Redaction Rule**: Public item feeds **never expose** the reporter's personal identity (no `userId`, `email`, or `fullName` in the public payload).
+- **Privacy & PII Redaction Rule**: Browse feeds never expose reporter identity or contact information. Item details include `contactMethod` and `contactValue` only when the reporter provided them for that report.
 - **Response (200 OK)**:
   ```json
   {
@@ -428,21 +431,19 @@ Detailed workflow specifications are defined in [`docs/requirements/authenticati
 - **Endpoint**: `GET /api/v1/items/:id`
 - **Access**: Public
 - **CSRF Required**: No
-- **Response (200 OK)**:
-  - If requested anonymously or by standard users: PII remains redacted.
-  - If requested by the original reporter or an administrator: includes `reporter: { id, fullName, email }`.
+- **Response (200 OK)**: Returns item details. Includes `contactMethod` (`EMAIL`, `WHATSAPP`, or `PHONE`) and `contactValue` only when the reporter provided them; otherwise contact details remain private.
 
-### 3.4 Update Item Report
+### 3.4 Mark Item Report Resolved
 - **Endpoint**: `PATCH /api/v1/items/:id`
 - **Access**: Authenticated (Owner of report or Admin)
 - **CSRF Required**: Yes
-- **Request Body** (partial update):
+- **Request Body**:
   ```json
   {
-    "description": "Updated description with additional details.",
-    "location": "Science Complex - Security Office"
+    "status": "RESOLVED"
   }
   ```
+- **Resolution behavior**: The report owner or an administrator may set an `ACTIVE` or `CLAIM_PENDING` report to `RESOLVED`. Any pending claims are closed as rejected and the claimants are notified.
 - **Response (200 OK)**:
   ```json
   {
@@ -457,6 +458,7 @@ Detailed workflow specifications are defined in [`docs/requirements/authenticati
 - **Endpoint**: `DELETE /api/v1/items/:id`
 - **Access**: Authenticated (Owner of report or Admin)
 - **CSRF Required**: Yes
+- **Behavior**: The report is archived and removed from the owner's report list. Pending claims are closed and claimants are notified; report and claim history remain stored.
 - **Response (200 OK)**:
   ```json
   {
@@ -471,6 +473,7 @@ Detailed workflow specifications are defined in [`docs/requirements/authenticati
 - **Endpoint**: `GET /api/v1/users/me/reports`
 - **Access**: Authenticated
 - **CSRF Required**: No
+- **Note**: Archived reports are omitted.
 - **Response (200 OK)**:
   ```json
   {

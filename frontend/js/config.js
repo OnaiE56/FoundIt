@@ -1,10 +1,10 @@
 /**
- * CampusFind – Application Configuration
- * Tagline: CampusFind – Find. Report. Reclaim.
+ * FoundIt – Application Configuration
+ * Tagline: FoundIt – Find. Report. Reclaim.
  */
 
 export const CONFIG = {
-  APP_NAME: 'CampusFind',
+  APP_NAME: 'FoundIt',
   TAGLINE: 'Find. Report. Reclaim.',
   VERSION: '1.0.0',
 

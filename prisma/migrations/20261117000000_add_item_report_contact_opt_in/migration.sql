@@ -1,0 +1,1 @@
+ALTER TABLE "ItemReport" ADD COLUMN "shareContact" BOOLEAN NOT NULL DEFAULT false;

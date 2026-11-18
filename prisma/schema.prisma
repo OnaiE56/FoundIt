@@ -1,4 +1,4 @@
-// CampusFind database schema, aligned with docs/system-design/database-design.md.
+// FoundIt database schema, aligned with docs/system-design/database-design.md.
 
 generator client {
   provider = "prisma-client-js"
@@ -99,6 +99,8 @@ model ItemReport {
   dateReported DateTime  
   status       ItemStatus @default(ACTIVE)
   imageUrl     String?   
+  contactMethod String?
+  contactValue  String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 

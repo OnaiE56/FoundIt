@@ -5,18 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A192F">
   <meta name="description" content="Find lost belongings, report a find, and reconnect campus items with their owners.">
-  <title>CampusFind — Student portal</title>
+  <title>FoundIt — Student portal</title>
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/student.css">
   <link rel="stylesheet" href="/css/setup.css">
   <script type="module" src="/js/student.js"></script>
 </head>
 <body class="student-body">
+  <main class="app-startup" id="app-startup" role="status" aria-live="polite">
+    <div class="app-startup-card">
+      <span class="student-brand-mark" aria-hidden="true">F</span>
+      <p class="student-eyebrow">FoundIt · Student portal</p>
+      <h1>Loading FoundIt</h1>
+      <p>Connecting to the campus portal…</p>
+      <small>If this screen stays here, refresh the page and check that your device can reach the computer’s network address.</small>
+      <noscript><small>JavaScript must be enabled to use FoundIt.</small></noscript>
+    </div>
+  </main>
+
   <div class="student-app-shell" hidden>
     <aside class="cf-sidebar student-sidebar" id="student-sidebar" aria-label="Student navigation">
-      <a class="cf-sidebar-brand student-brand" href="#home" aria-label="CampusFind home">
-        <span class="student-brand-mark" aria-hidden="true">C</span>
-        <span class="cf-sidebar-brand-name">CampusFind</span>
+      <a class="cf-sidebar-brand student-brand" href="#home" aria-label="FoundIt home">
+        <span class="student-brand-mark" aria-hidden="true">F</span>
+        <span class="cf-sidebar-brand-name">FoundIt</span>
       </a>
       <p class="student-sidebar-caption">STUDENT SPACE</p>
 
@@ -30,8 +41,8 @@
       </nav>
 
       <div class="cf-sidebar-footer student-sidebar-footer">
-        <span class="student-demo-avatar" id="sidebar-user-avatar" aria-hidden="true">CF</span>
-        <span class="student-sidebar-user"><strong id="sidebar-user-name">CampusFind user</strong><small id="sidebar-user-role">Student account</small></span>
+        <span class="student-demo-avatar" id="sidebar-user-avatar" aria-hidden="true">FI</span>
+        <span class="student-sidebar-user"><strong id="sidebar-user-name">FoundIt user</strong><small id="sidebar-user-role">Student account</small></span>
         <button class="student-signout" type="button" data-action="logout">Sign out</button>
       </div>
     </aside>
@@ -44,9 +55,9 @@
           <button class="student-icon-button student-menu-button" id="menu-toggle" type="button" aria-label="Open navigation" aria-controls="student-sidebar" aria-expanded="false">
             <span data-icon="menu"></span>
           </button>
-          <a class="student-mobile-brand" href="#home" aria-label="CampusFind home">
-            <span class="student-brand-mark" aria-hidden="true">C</span>
-            <span>CampusFind</span>
+          <a class="student-mobile-brand" href="#home" aria-label="FoundIt home">
+            <span class="student-brand-mark" aria-hidden="true">F</span>
+            <span>FoundIt</span>
           </a>
           <div class="student-header-context">
             <span class="student-header-kicker">STUDENT PORTAL</span>
@@ -71,15 +82,15 @@
           </div>
 
           <a class="student-header-profile" href="#profile" aria-label="View your profile">
-            <span class="student-avatar" id="header-user-avatar">CF</span>
-            <span class="student-header-profile-copy"><strong id="header-user-name">CampusFind user</strong><small id="header-user-role">Student</small></span>
+            <span class="student-avatar" id="header-user-avatar">FI</span>
+            <span class="student-header-profile-copy"><strong id="header-user-name">FoundIt user</strong><small id="header-user-role">Student</small></span>
             <span class="student-profile-chevron" data-icon="chevron-down"></span>
           </a>
         </div>
       </header>
 
       <main class="student-content" id="page-content" tabindex="-1"></main>
-      <footer class="student-footer"><span>CampusFind</span><span>Find. Report. Reclaim.</span><span>Semester project portal</span></footer>
+      <footer class="student-footer"><span>FoundIt</span><span>Find. Report. Reclaim.</span><span>Semester project portal</span></footer>
     </div>
 
     <nav class="cf-bottom-nav student-bottom-nav" aria-label="Student shortcuts">

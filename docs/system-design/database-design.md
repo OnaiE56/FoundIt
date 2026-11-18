@@ -1,6 +1,6 @@
-# CampusFind – Database Design & Schema Specification
+# FoundIt – Database Design & Schema Specification
 
-> **Project:** CampusFind – University Lost and Found Management System  
+> **Project:** FoundIt – University Lost and Found Management System  
 > **Stage:** Project Foundation and Technical Architecture Specification  
 > **Database:** SQLite for local development; PostgreSQL (v15+) is the future production target  
 > **ORM & Migration Tool:** Prisma ORM (v6)  
@@ -10,7 +10,7 @@
 
 ## 1. Overview & Architectural Principles
 
-CampusFind currently uses a local **SQLite** database through **Prisma ORM (v6)**. PostgreSQL remains the approved production target for a later deployment phase. The Prisma models and relationships are kept portable where supported; migration histories are provider-specific and kept separate.
+FoundIt currently uses a local **SQLite** database through **Prisma ORM (v6)**. PostgreSQL remains the approved production target for a later deployment phase. The Prisma models and relationships are kept portable where supported; migration histories are provider-specific and kept separate.
 
 The current schema and SQLite migrations are `prisma/schema.prisma` and `prisma/migrations-sqlite/`. The existing PostgreSQL history under `prisma/migrations/` is preserved and is not used by local SQLite commands. A future provider change requires a PostgreSQL-specific client and migration history, plus an explicit data transfer. Prisma does not convert migration SQL between providers automatically.
 
@@ -80,6 +80,8 @@ erDiagram
         timestamptz dateReported
         ItemStatus status
         string imageUrl
+        string contactMethod
+        string contactValue
         timestamptz createdAt
         timestamptz updatedAt
     }
@@ -162,6 +164,8 @@ Stores lost belongings reported by students and found items submitted by campus 
 | `dateReported` | `TIMESTAMPTZ` | `NOT NULL` | Date and time when the item was lost/found |
 | `status` | `ItemStatus` (Enum) | `NOT NULL`, `DEFAULT 'ACTIVE'` | `ACTIVE`, `CLAIM_PENDING`, `RESOLVED`, `ARCHIVED`, `REJECTED` |
 | `imageUrl` | `VARCHAR(500)` | `NULLABLE` | Cloud-hosted image URL (Vercel Blob) |
+| `contactMethod` | `TEXT` | `NULLABLE` | Reporter-provided contact channel: `EMAIL`, `WHATSAPP`, or `PHONE` |
+| `contactValue` | `TEXT` | `NULLABLE` | Email address or international phone number shown only on item details |
 | `createdAt` | `TIMESTAMPTZ` | `NOT NULL`, `DEFAULT NOW()` | Record creation timestamp |
 | `updatedAt` | `TIMESTAMPTZ` | `NOT NULL`, `DEFAULT NOW()` | Last update timestamp |
 
@@ -301,7 +305,7 @@ To ensure sub-100ms response times on search queries, dashboard aggregations, an
 - `VerificationToken (userId, type, expiresAt)` – Composite index for filtering unexpired, unspent tokens per user per type.
 
 ### 5.4 Full-Text Search Strategy
-CampusFind supports keyword search across item names, descriptions, and campus locations. The PostgreSQL `tsvector`/GIN index below is a future provider-specific optimization and is intentionally absent from the local SQLite migration history:
+FoundIt supports keyword search across item names, descriptions, and campus locations. The PostgreSQL `tsvector`/GIN index below is a future provider-specific optimization and is intentionally absent from the local SQLite migration history:
 
 ```sql
 -- PostgreSQL Full-Text Search Index on ItemReport
@@ -316,7 +320,7 @@ USING GIN (to_tsvector('english', "itemName" || ' ' || "description" || ' ' || "
 The executable `prisma/schema.prisma` currently targets SQLite. The PostgreSQL configuration below is retained as a future production reference; do not apply the PostgreSQL migration history to SQLite or vice versa.
 
 ```prisma
-// CampusFind Database Schema - Prisma v6
+// FoundIt Database Schema - Prisma v6
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -419,6 +423,8 @@ model ItemReport {
   dateReported DateTime       @db.Timestamptz
   status       ItemStatus     @default(ACTIVE)
   imageUrl     String?        @db.VarChar(500)
+  contactMethod String?
+  contactValue  String?
   createdAt    DateTime       @default(now()) @db.Timestamptz
   updatedAt    DateTime       @updatedAt @db.Timestamptz
 
@@ -487,7 +493,7 @@ model Session {
 ## 7. PostgreSQL Connection Architecture in Serverless
 
 ### 7.1 Separation of `DATABASE_URL` and `DIRECT_URL`
-Because CampusFind deploys backend functions on Vercel's serverless infrastructure, each function execution can spawn a new process. Without connection pooling, a sudden surge of requests could instantly exhaust PostgreSQL's `max_connections` limit.
+Because FoundIt deploys backend functions on Vercel's serverless infrastructure, each function execution can spawn a new process. Without connection pooling, a sudden surge of requests could instantly exhaust PostgreSQL's `max_connections` limit.
 
 Prisma v6 addresses this via a two-tier connection pattern:
 

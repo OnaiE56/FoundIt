@@ -1,10 +1,10 @@
-# CampusFind
+# FoundIt
 
 ### University Lost and Found Management System
 
-**CampusFind – Find. Report. Reclaim.**
+**FoundIt – Find. Report. Reclaim.**
 
-CampusFind is a web-based University Lost and Found Management System designed to help university students report missing belongings, report found items, search for reported items, and submit ownership claims to recover their belongings.
+FoundIt is a web-based University Lost and Found Management System designed to help university students report missing belongings, report found items, search for reported items, and submit ownership claims to recover their belongings.
 
 The platform provides a centralized system for managing lost and found reports and allows administrators to review ownership claims.
 
@@ -32,7 +32,7 @@ Students can:
 - Register and log in using email credentials.
 - Report lost and found items with a description, category, date, and location.
 - Browse and search reported items with category, status, and location filters.
-- View item details (with reporter contact details protected by default).
+- View item details with a reporter-provided email, WhatsApp, or call option when available.
 - Submit ownership claims on found items with proof of ownership.
 - Track their personal reports and claims via a student dashboard.
 - Receive in-app notifications regarding claim decisions and report updates.
@@ -49,7 +49,7 @@ Administrators can:
 ## Main Features
 
 - **Authentication & Onboarding**: Email/password registration, login, logout, and secure cookie sessions.
-- **Lost & Found Reporting**: Categorized reports with date, location, and description.
+- **Lost & Found Reporting**: Categorized reports with date, location, description, and optional email, WhatsApp, or call contact details.
 - **Item Photos**: Optional JPEG, PNG, or WebP uploads are attached to reports and shown in item listings.
 - **Item Browsing & Search**: Search by keyword with filters for report type and category.
 - **Ownership Claim Submission**: A short form for details that help demonstrate ownership.
@@ -59,7 +59,7 @@ Administrators can:
 
 ## Technology Stack
 
-CampusFind utilizes the following technologies:
+FoundIt utilizes the following technologies:
 
 | Component | Technology | Current Status / Purpose |
 |---|---|---|
@@ -80,7 +80,7 @@ Local development uses SQLite and does not require a database server. PostgreSQL
 
 ## Architecture Overview
 
-CampusFind follows a client-server architecture adapted for serverless deployment:
+FoundIt follows a client-server architecture adapted for serverless deployment:
 
 1. **Frontend Layer**: Source assets live in `frontend/`. The install/build script copies them into the ignored, generated `public/` directory, which Vercel serves through its CDN; local Express serves the same generated assets.
 2. **API Communication**: The frontend interacts with backend REST endpoints under `/api/v1/*`.
@@ -97,7 +97,7 @@ CampusFind follows a client-server architecture adapted for serverless deploymen
 The repository structure separates the working application from its design notes:
 
 ```text
-CampusFind/
+FoundIt/
 │
 ├── frontend/                               # [EXISTING] Frontend client assets
 │   ├── assets/                             # [EXISTING] Static icons and graphic assets
@@ -184,6 +184,16 @@ The following tools are required for local development:
 
 5. **GitHub Account** – Required for team repository collaboration and pull requests.
 
+### Open the local app on a phone
+
+Use the same command for desktop and mobile preview. Connect the phone and development computer to the same Wi-Fi network, then start the server with:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` on the development computer. On the phone, open one of the `http://<address>:3000` network URLs printed in the terminal. If the page does not load, allow Node.js through the computer's firewall on private networks.
+
 ### Verify Node.js Installation
 
 Open a terminal or command prompt and run:
@@ -205,7 +215,7 @@ copy .env.example .env
 npm run secret:generate
 ```
 
-Paste the generated value into `SESSION_SECRET` in `.env`. The example already sets `DATABASE_URL=file:./dev.db`; no PostgreSQL server or `DIRECT_URL` is needed locally. `npm run dev` starts the standalone Express server with file watching on port `3000` by default. The `/api/v1/health` endpoint confirms Express is responding; it does not check database connectivity. Session middleware uses the local SQLite database when both `SESSION_SECRET` and `DATABASE_URL` are set.
+Paste the generated value into `SESSION_SECRET` in `.env`. The example already sets `DATABASE_URL=file:./dev.db`; no PostgreSQL server or `DIRECT_URL` is needed locally. `npm run dev` starts the standalone Express server with file watching on port `3000` by default and prints desktop and mobile browser addresses. The `/api/v1/health` endpoint confirms Express is responding; it does not check database connectivity. Session middleware uses the local SQLite database when both `SESSION_SECRET` and `DATABASE_URL` are set.
 
 Apply the schema and starter data with:
 
@@ -258,7 +268,7 @@ For future PostgreSQL deployment, use the provider's pooled `DATABASE_URL` at ru
 
 ## Deployment
 
-CampusFind is designed for deployment on Vercel:
+FoundIt is designed for deployment on Vercel:
 
 1. Push feature branches and pull requests to the GitHub repository.
 2. Connect the repository to Vercel for continuous deployment.
@@ -271,7 +281,7 @@ For comprehensive serverless deployment details, consult [`docs/system-design/ve
 
 ## Development Model
 
-CampusFind follows the **Agile Software Development Model**, utilizing iterative sprint cadences:
+FoundIt follows the **Agile Software Development Model**, utilizing iterative sprint cadences:
 
 - Iterative planning, feature backlog grooming, and user story estimation.
 - Short, targeted implementation sprints with dedicated pull request reviews.

@@ -1,5 +1,5 @@
 /**
- * CampusFind – Validation Utilities
+ * FoundIt – Validation Utilities
  * Note: Uses a practical, basic email-format validator for standard user input.
  */
 

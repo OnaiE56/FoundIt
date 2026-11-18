@@ -140,6 +140,10 @@ export const StudentService = {
   },
   getItems() { return data.items.map((item) => ({ ...item })); },
   getItem(id) { return [...data.items, ...data.reports].find((item) => item.id === id) || null; },
+  async getItemDetails(id) {
+    const result = await ApiService.request(`/items/${encodeURIComponent(id)}`);
+    return itemForView(result.item);
+  },
   getMyReports() { return data.reports.map((item) => ({ ...item })); },
   getMyClaims() { return data.claims.map((claim) => ({ ...claim })); },
   getNotifications() { return data.notifications.map((notification) => ({ ...notification })); },
@@ -166,6 +170,8 @@ export const StudentService = {
         description: report.description,
         location: report.location,
         dateReported: new Date(`${report.dateReported}T12:00:00`).toISOString(),
+        contactMethod: report.contactValue ? report.contactMethod : null,
+        contactValue: report.contactValue || null,
         imageUrl: report.imageUrl || null
       }
     });
@@ -173,6 +179,23 @@ export const StudentService = {
     data.reports = [item, ...data.reports];
     data.items = mergeById(data.items, [item]);
     return item;
+  },
+
+  async markReportResolved(id) {
+    const result = await ApiService.request(`/items/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: { status: 'RESOLVED' }
+    });
+    const updated = itemForView(result.item);
+    data.reports = data.reports.map((report) => report.id === id ? { ...report, ...updated } : report);
+    data.items = mergeById(data.items, [updated]);
+    return updated;
+  },
+
+  async deleteReport(id) {
+    await ApiService.request(`/items/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    data.reports = data.reports.filter((report) => report.id !== id);
+    data.items = data.items.filter((item) => item.id !== id);
   },
 
   async uploadReportPhoto(file) {

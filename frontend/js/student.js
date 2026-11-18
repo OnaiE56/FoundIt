@@ -5,6 +5,7 @@ import { ApiService } from './services/api.service.js';
 import { StudentService } from './services/student.service.js';
 
 const pageContent = document.querySelector('#page-content');
+const startupRoot = document.querySelector('#app-startup');
 const appShell = document.querySelector('.student-app-shell');
 const authRoot = document.querySelector('#auth-root');
 const sidebar = document.querySelector('#student-sidebar');
@@ -49,7 +50,7 @@ function renderAuth(message = '') {
   authRoot.hidden = false;
   const registering = state.authMode === 'register';
   authRoot.innerHTML = `
-    <header class="setup-header"><a class="setup-brand" href="#home"><span class="setup-brand-mark">C</span>CampusFind</a><span class="setup-header-note">Find. Report. Reclaim.</span></header>
+    <header class="setup-header"><a class="setup-brand" href="#home"><span class="setup-brand-mark">F</span>FoundIt</a><span class="setup-header-note">Find. Report. Reclaim.</span></header>
     <section class="setup-main"><div class="setup-card auth-card">
       <p class="setup-eyebrow"><span class="setup-pulse"></span> CAMPUS LOST &amp; FOUND</p>
       <h1>${registering ? 'Create your account' : 'Welcome back'}</h1>
@@ -62,7 +63,7 @@ function renderAuth(message = '') {
         ${registering ? '<label class="student-form-field"><span>Confirm password</span><input name="confirmPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" required></label>' : ''}
         <button class="cf-btn cf-btn-primary auth-submit" type="submit">${registering ? 'Create account' : 'Sign in'}</button>
       </form>
-      <p class="auth-switch">${registering ? 'Already have an account?' : 'New to CampusFind?'} <button type="button" data-action="switch-auth">${registering ? 'Sign in' : 'Create an account'}</button></p>
+      <p class="auth-switch">${registering ? 'Already have an account?' : 'New to FoundIt?'} <button type="button" data-action="switch-auth">${registering ? 'Sign in' : 'Create an account'}</button></p>
       <p class="setup-footer">Semester project version: email confirmation and password reset are not included.</p>
     </div></section>`;
 }
@@ -104,6 +105,8 @@ async function startApp() {
   } catch (error) {
     if (error.status === 401) renderAuth();
     else renderAuth(error.message);
+  } finally {
+    startupRoot.hidden = true;
   }
 }
 
@@ -139,6 +142,7 @@ const iconShapes = {
   filter: '<path d="M4 7h16M7 12h10m-7 5h4"/><circle cx="8" cy="7" r="2"/><circle cx="15" cy="12" r="2"/>',
   image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 2.8a2 2 0 0 1-.6 1.8L7.7 9.6a16 16 0 0 0 6.7 6.7l1.3-1.3a2 2 0 0 1 1.8-.6l2.8.5a2 2 0 0 1 1.7 2z"/>',
   shield: '<path d="M12 3 4.5 6v5.2c0 4.7 3.2 8.8 7.5 9.8 4.3-1 7.5-5.1 7.5-9.8V6z"/><path d="m9 12 2 2 4-4"/>',
   lock: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3M12 14v3"/>',
   logout: '<path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>'
@@ -268,7 +272,7 @@ function renderDashboard() {
         <a class="cf-btn cf-btn-primary" href="#report">${icon('plus', 18)}Report an item</a>
       </div>
 
-      <section class="student-welcome-banner" aria-label="CampusFind welcome">
+      <section class="student-welcome-banner" aria-label="FoundIt welcome">
         <div class="welcome-copy">
           <span class="welcome-overline"><span></span> YOUR CAMPUS, CONNECTED</span>
           <h2>Lost something?<br><span>Let’s bring it back.</span></h2>
@@ -436,6 +440,11 @@ function renderReportForm() {
             <label class="student-form-field"><span>${state.reportType === 'LOST' ? 'Date last seen' : 'Date found'} <b>*</b></span><input name="dateReported" type="date" max="${new Date().toISOString().slice(0, 10)}" value="${new Date().toISOString().slice(0, 10)}" required></label>
           </div>
 
+          <div class="form-grid-two report-contact-fields">
+            <label class="student-form-field"><span>Contact method <small class="optional-label">OPTIONAL</small></span><select id="report-contact-method" name="contactMethod"><option value="EMAIL">Email</option><option value="WHATSAPP">WhatsApp</option><option value="PHONE">Call</option></select></label>
+            <label class="student-form-field"><span>Contact details <small class="optional-label">OPTIONAL</small></span><input id="report-contact-value" name="contactValue" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com"><small id="report-contact-hint">Visible to anyone viewing this item. Leave blank to keep it private.</small></label>
+          </div>
+
           <div class="student-form-field report-photo-field">
             <span>Item photo <small class="optional-label">OPTIONAL</small></span>
             <label class="report-dropzone" for="report-photo-input">
@@ -451,7 +460,7 @@ function renderReportForm() {
             </div>
           </div>
 
-          <div class="report-form-actions"><span>${icon('shield', 17)}Your personal details stay private.</span><button class="cf-btn cf-btn-primary" type="submit" ${state.uploadingReport ? 'disabled' : ''}>${state.uploadingReport ? 'Saving report…' : `Submit report ${icon('arrow-right', 17)}`}</button></div>
+          <div class="report-form-actions"><span>${icon('shield', 17)}Contact details are optional.</span><button class="cf-btn cf-btn-primary" type="submit" ${state.uploadingReport ? 'disabled' : ''}>${state.uploadingReport ? 'Saving report…' : `Submit report ${icon('arrow-right', 17)}`}</button></div>
         </form>
 
         <aside class="report-side-column">
@@ -459,9 +468,9 @@ function renderReportForm() {
             <span class="guidance-icon">${icon('spark', 20)}</span><p class="student-eyebrow">A HELPFUL TIP</p><h2>Make the details count.</h2>
             <p>Include a color, brand, or distinctive feature. Avoid posting serial numbers or information someone could use to falsely claim an item.</p>
             <div class="guidance-example"><span>${icon('check', 15)}</span><p><strong>Helpful:</strong> “Green bottle with a white mountain sticker.”</p></div>
-            <div class="guidance-example is-muted"><span>${icon('close', 15)}</span><p><strong>Avoid:</strong> Sharing private contact details.</p></div>
+            <div class="guidance-example is-muted"><span>${icon('close', 15)}</span><p><strong>Avoid:</strong> Putting contact details in the item description.</p></div>
           </section>
-          <section class="student-panel report-privacy-card"><span class="privacy-shield">${icon('shield', 21)}</span><div><h3>Your privacy matters</h3><p>Public posts don’t display student IDs, email addresses, or phone numbers.</p></div></section>
+          <section class="student-panel report-privacy-card"><span class="privacy-shield">${icon('shield', 21)}</span><div><h3>Your privacy matters</h3><p>Contact details only appear on this report when you add them. Student IDs are never shown publicly.</p></div></section>
         </aside>
       </div>
     </div>`;
@@ -478,7 +487,7 @@ function renderReports() {
       ${renderPageHeading('YOUR POSTS', 'My reports', 'Keep track of the items you’ve shared with your campus community.', `<a class="cf-btn cf-btn-primary" href="#report">${icon('plus', 18)}New report</a>`)}
       <section class="student-stats-grid reports-mini-stats" aria-label="Report totals">
         ${renderMiniStat('All reports', allReports.length, 'file', 'blue')}
-        ${renderMiniStat('Active', allReports.filter((item) => item.status === 'ACTIVE').length, 'clock', 'amber')}
+        ${renderMiniStat('Active', allReports.filter((item) => ['ACTIVE', 'CLAIM_PENDING'].includes(item.status)).length, 'clock', 'amber')}
         ${renderMiniStat('Resolved', allReports.filter((item) => item.status === 'RESOLVED').length, 'check', 'green')}
       </section>
       <div class="student-section-heading reports-list-heading"><div><p class="student-eyebrow">YOUR ACTIVITY</p><h2>Reports you’ve made</h2></div>
@@ -497,11 +506,14 @@ function renderMiniStat(label, value, iconName, tone) {
 }
 
 function renderReportRow(item) {
+  const resolveAction = ['ACTIVE', 'CLAIM_PENDING'].includes(item.status)
+    ? `<button class="cf-btn cf-btn-outline report-action-resolve" type="button" data-action="mark-report-resolved" data-item-id="${h(item.id)}">Mark resolved</button>`
+    : '';
   return `
     <article class="report-row student-panel">
       ${itemArt(item)}
-      <div class="report-row-main"><div class="student-item-meta">${badgeForType(item.reportType)}<span class="student-item-category">${h(item.category)}</span></div><h3>${h(item.itemName)}</h3><p>${h(item.description)}</p><span class="student-item-location">${icon('pin', 15)}${h(item.location)} <span class="meta-dot">·</span> ${formatDate(item.dateReported)}</span></div>
-      <div class="report-row-status">${badgeForStatus(item.status)}<button class="student-icon-link" type="button" data-action="open-item" data-item-id="${h(item.id)}" aria-label="View ${h(item.itemName)}">${icon('arrow-up-right', 18)}</button></div>
+      <div class="report-row-main"><div class="student-item-meta">${badgeForType(item.reportType)}<span class="student-item-category">${h(item.category)}</span>${item.claimsCount ? `<span class="report-claims-count">${item.claimsCount} claim${item.claimsCount === 1 ? '' : 's'}</span>` : ''}</div><h3>${h(item.itemName)}</h3><p>${h(item.description)}</p><span class="student-item-location">${icon('pin', 15)}${h(item.location)} <span class="meta-dot">·</span> ${formatDate(item.dateReported)}</span></div>
+      <div class="report-row-status">${badgeForStatus(item.status)}<div class="report-row-actions">${resolveAction}<button class="cf-btn cf-btn-outline report-action-delete" type="button" data-action="delete-report" data-item-id="${h(item.id)}">Delete</button><button class="student-icon-link" type="button" data-action="open-item" data-item-id="${h(item.id)}" aria-label="View ${h(item.itemName)}">${icon('arrow-up-right', 18)}</button></div></div>
     </article>`;
 }
 
@@ -539,14 +551,14 @@ function renderClaimRow(claim) {
 
 function renderProfile() {
   const user = StudentService.getUser() || {};
-  const initials = user.fullName?.split(/\s+/).map((part) => part[0]).slice(0, 2).join('').toUpperCase() || 'CF';
+  const initials = user.fullName?.split(/\s+/).map((part) => part[0]).slice(0, 2).join('').toUpperCase() || 'FI';
   const joined = user.createdAt ? formatDate(user.createdAt) : 'Recently';
   return `
     <div class="student-page profile-page">
       ${renderPageHeading('YOUR ACCOUNT', 'My profile', 'Your account details and verification status, all in one place.')}
       <section class="student-profile-hero student-panel">
         <div class="profile-avatar-large">${h(initials)}<span class="profile-online-dot"></span></div>
-        <div class="profile-identity"><p class="student-eyebrow">${h(user.role || 'STUDENT')} ACCOUNT</p><h2>${h(user.fullName)}</h2><p>${h(user.email)}</p><span class="profile-member-since">CampusFind member since ${h(joined)}</span></div>
+        <div class="profile-identity"><p class="student-eyebrow">${h(user.role || 'STUDENT')} ACCOUNT</p><h2>${h(user.fullName)}</h2><p>${h(user.email)}</p><span class="profile-member-since">FoundIt member since ${h(joined)}</span></div>
         <button type="button" class="cf-btn cf-btn-outline" data-action="logout">Sign out</button>
       </section>
       <div class="profile-grid">
@@ -562,7 +574,7 @@ function renderProfile() {
           <div class="verification-info">${icon('info', 16)}Account verification needs university email services and is outside this semester build.</div>
         </section>
       </div>
-      <section class="student-panel privacy-preferences"><div class="privacy-preferences-icon">${icon('shield', 20)}</div><div><h2>Your privacy on CampusFind</h2><p>Public browse cards leave out student IDs, emails, and private contact information. The details you add to a claim are only for the review team.</p></div></section>
+      <section class="student-panel privacy-preferences"><div class="privacy-preferences-icon">${icon('shield', 20)}</div><div><h2>Your privacy on FoundIt</h2><p>Public browse cards leave out student IDs, emails, and private contact information. The details you add to a claim are only for the review team.</p></div></section>
     </div>`;
 }
 
@@ -631,7 +643,7 @@ function render() {
   document.querySelector('#header-user-name').textContent = user.fullName;
   document.querySelector('#header-user-role').textContent = admin ? 'Administrator' : 'Student';
   document.querySelector('#header-user-avatar').textContent = initials;
-  document.title = `${routeTitles[state.route]} · CampusFind`;
+  document.title = `${routeTitles[state.route]} · FoundIt`;
   document.querySelector('#header-page-title').textContent = routeTitles[state.route] || 'Overview';
   hydrateStaticIcons();
   document.querySelectorAll('[data-nav-route]').forEach((link) => {
@@ -684,8 +696,14 @@ function showToast(message, type = 'info') {
   window.setTimeout(() => toast.remove(), 4500);
 }
 
-function openItemModal(itemId) {
-  const item = StudentService.getItem(itemId);
+async function openItemModal(itemId) {
+  let item;
+  try {
+    item = await StudentService.getItemDetails(itemId);
+  } catch (error) {
+    showToast(error.message, 'error');
+    return;
+  }
   if (!item) return;
   state.activeModalItem = item.id;
   state.lastFocusedElement = document.activeElement;
@@ -701,8 +719,9 @@ function openItemModal(itemId) {
           <h2 id="modal-item-title">${h(item.itemName)}</h2>
           <p class="modal-item-description" id="modal-item-description">${h(item.description)}</p>
           <div class="modal-item-facts"><span>${icon('pin', 17)}<span><small>Campus location</small><strong>${h(item.location)}</strong></span></span><span>${icon('calendar', 17)}<span><small>Reported</small><strong>${formatDate(item.dateReported)}</strong></span></span></div>
-          <div class="modal-privacy-note">${icon('shield', 16)}Reporter contact details are kept private.</div>
+          <div class="modal-privacy-note">${icon('shield', 16)}${item.contactMethod ? 'The reporter shared a contact method for this item.' : 'The reporter has not added public contact details.'}</div>
           <div class="modal-actions">
+            ${renderContactAction(item, isOwnReport)}
             ${item.reportType === 'FOUND' && item.status === 'ACTIVE' && !isOwnReport
               ? `<button class="cf-btn cf-btn-primary" type="button" data-action="submit-claim" data-item-id="${h(item.id)}" ${hasPendingClaim ? 'disabled' : ''}>${hasPendingClaim ? 'Claim submitted' : 'I think this is mine'} ${icon('arrow-right', 17)}</button>`
               : `<a class="cf-btn cf-btn-primary" href="#browse" data-action="close-modal">Back to browse ${icon('arrow-right', 17)}</a>`}
@@ -712,6 +731,31 @@ function openItemModal(itemId) {
       </section>
     </div>`;
   modalRoot.querySelector('.modal-close-button')?.focus();
+}
+
+function renderContactAction(item, isOwnReport) {
+  if (isOwnReport || !item.contactMethod || !item.contactValue) return '';
+  const subject = encodeURIComponent(`FoundIt: ${item.itemName}`);
+  let href;
+  let label;
+  let iconName = 'phone';
+  let target = '';
+  if (item.contactMethod === 'EMAIL') {
+    href = `mailto:${item.contactValue}?subject=${subject}`;
+    label = `Email ${item.contactValue}`;
+    iconName = 'mail';
+  } else if (item.contactMethod === 'WHATSAPP') {
+    const digits = item.contactValue.replace(/\D/g, '');
+    href = `https://wa.me/${digits}?text=${encodeURIComponent(`Hi, I’m contacting you about “${item.itemName}” on FoundIt.`)}`;
+    label = `WhatsApp ${item.contactValue}`;
+    target = ' target="_blank" rel="noopener noreferrer"';
+  } else if (item.contactMethod === 'PHONE') {
+    href = `tel:${item.contactValue}`;
+    label = `Call ${item.contactValue}`;
+  } else {
+    return '';
+  }
+  return `<a class="cf-btn cf-btn-secondary modal-contact-link" href="${h(href)}"${target}>${h(label)} ${icon(iconName, 17)}</a>`;
 }
 
 function closeModal() {
@@ -732,12 +776,32 @@ function updateReportTypeButtons() {
   if (dateLabel) dateLabel.innerHTML = `${state.reportType === 'LOST' ? 'Date last seen' : 'Date found'} <b>*</b>`;
 }
 
+function updateReportContactField() {
+  const method = pageContent.querySelector('#report-contact-method')?.value;
+  const input = pageContent.querySelector('#report-contact-value');
+  const hint = pageContent.querySelector('#report-contact-hint');
+  if (!input || !method) return;
+  if (method === 'EMAIL') {
+    input.type = 'email';
+    input.removeAttribute('pattern');
+    input.autocomplete = 'email';
+    input.placeholder = 'you@example.com';
+    if (hint) hint.textContent = 'Visible to anyone viewing this item. Leave blank to keep it private.';
+    return;
+  }
+  input.type = 'tel';
+  input.pattern = '\\+[1-9][0-9\\s().-]{6,20}';
+  input.autocomplete = 'tel';
+  input.placeholder = '+233 20 123 4567';
+  if (hint) hint.textContent = 'Include the country code. This number is visible to anyone viewing this item.';
+}
+
 async function handleClick(event) {
   const actionElement = event.target.closest('[data-action]');
   if (!actionElement) return;
   const action = actionElement.dataset.action;
 
-  if (action === 'open-item' || action === 'set-browse-type' || action === 'set-report-type' || action === 'set-report-filter' || action === 'set-claim-filter' || action.startsWith('go-') || action === 'clear-filters' || action === 'browse-category' || action === 'mark-notification' || action === 'mark-all-read' || action === 'submit-claim' || action === 'review-claim' || action === 'switch-auth' || action === 'logout' || action === 'close-modal' || action === 'backdrop-close' || action === 'dismiss-toast' || action === 'open-menu' || action === 'close-menu' || action === 'toggle-notifications' || action === 'remove-report-photo') {
+  if (action === 'open-item' || action === 'set-browse-type' || action === 'set-report-type' || action === 'set-report-filter' || action === 'set-claim-filter' || action.startsWith('go-') || action === 'clear-filters' || action === 'browse-category' || action === 'mark-notification' || action === 'mark-all-read' || action === 'submit-claim' || action === 'review-claim' || action === 'mark-report-resolved' || action === 'delete-report' || action === 'switch-auth' || action === 'logout' || action === 'close-modal' || action === 'backdrop-close' || action === 'dismiss-toast' || action === 'open-menu' || action === 'close-menu' || action === 'toggle-notifications' || action === 'remove-report-photo') {
     if (action !== 'close-modal' && action !== 'backdrop-close' && action !== 'dismiss-toast') event.preventDefault();
   }
 
@@ -830,6 +894,26 @@ async function handleClick(event) {
         showToast('Claim review saved.', 'success');
       } catch (error) { showToast(error.message, 'error'); }
       break;
+    case 'mark-report-resolved': {
+      const report = StudentService.getMyReports().find((item) => item.id === actionElement.dataset.itemId);
+      if (!report || !window.confirm(`Mark “${report.itemName}” as resolved? Any pending claims will be closed.`)) break;
+      try {
+        await StudentService.markReportResolved(report.id);
+        render();
+        showToast('Report marked as resolved.', 'success');
+      } catch (error) { showToast(error.message, 'error'); }
+      break;
+    }
+    case 'delete-report': {
+      const report = StudentService.getMyReports().find((item) => item.id === actionElement.dataset.itemId);
+      if (!report || !window.confirm(`Delete “${report.itemName}”? It will be removed from your reports, and any pending claims will be closed.`)) break;
+      try {
+        await StudentService.deleteReport(report.id);
+        render();
+        showToast('Report deleted.', 'success');
+      } catch (error) { showToast(error.message, 'error'); }
+      break;
+    }
     case 'switch-auth':
       state.authMode = state.authMode === 'login' ? 'register' : 'login';
       renderAuth();
@@ -891,6 +975,8 @@ async function handleReportSubmit(event) {
       description: String(formData.get('description') || '').trim(),
       location: String(formData.get('location') || ''),
       dateReported: String(formData.get('dateReported') || new Date().toISOString().slice(0, 10)),
+      contactMethod: String(formData.get('contactMethod') || 'EMAIL'),
+      contactValue: String(formData.get('contactValue') || '').trim(),
       imageUrl: state.reportPhotoUrl
     });
     clearReportPhoto();
@@ -1053,6 +1139,7 @@ document.addEventListener('input', handleSearchInput);
 document.addEventListener('change', (event) => {
   handleCategoryChange(event);
   handleReportPhotoChange(event);
+  if (event.target.id === 'report-contact-method') updateReportContactField();
 });
 document.addEventListener('keydown', handleKeydown);
 window.addEventListener('hashchange', () => void loadRoute());
